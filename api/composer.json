@@ -1,0 +1,20 @@
+{
+    "name": "reset-button/aparser-api",
+    "description": "Aparser API",
+    "type": "library",
+    "authors": [
+        {
+            "name": "Alexey Shatrov",
+            "email": "counterafte@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=7.4.0",
+        "ext-json" : "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "ResetButton\\Aparser\\": "src"
+        }
+    }
+}
