@@ -3,8 +3,9 @@
 namespace ResetButton\Aparser;
 
 use ResetButton\Aparser\Client\HttpClient;
-use ResetButton\Aparser\Dto\AparserGetProxyRequest;
-use ResetButton\Aparser\Dto\AparserRequest;
+use ResetButton\Aparser\Dto\Request\AparserGetProxyRequest;
+use ResetButton\Aparser\Dto\Request\AparserRequest;
+use ResetButton\Aparser\Dto\Response\AparserResponse;
 
 class Aparser
 {
@@ -18,17 +19,39 @@ class Aparser
         $this->password = $password;
     }
 
-    public function getProxy(array $dataOptions = [])
-    {
-        $aparserGetProxyRequest = new AparserGetProxyRequest($this);
-        $aparserGetProxyRequest->parseOptions($dataOptions);
+    /**
+     * @param array $data
+     * @return AparserResponse
+     * @throws Exception\AparserException
+     */
 
+    public function getProxy(array $data = []) : AparserResponse
+    {
+        $aparserGetProxyRequest = new AparserGetProxyRequest($data);
         return $this->makeRequest($aparserGetProxyRequest);
     }
 
-    public function makeRequest(AparserRequest $aparserRequest)
+    /**
+     * @param AparserRequest $aparserRequest
+     * @return AparserResponse
+     * @throws Exception\AparserException
+     */
+
+    public function makeRequest(AparserRequest $aparserRequest) : AparserResponse
     {
-        HttpClient::makeRequest($aparserRequest);
+        $payload = HttpClient::prepareRequest($this, $aparserRequest);
+        return $this->makeRawRequest(json_encode($payload));
+    }
+
+    /**
+     * @param string $aparserJsonRequest
+     * @return AparserResponse
+     * @throws Exception\AparserException
+     */
+
+    public function makeRawRequest(string $aparserJsonRequest)  : AparserResponse
+    {
+        return HttpClient::makeRequest($this, $aparserJsonRequest);
     }
 
     public function getUrl() : string
